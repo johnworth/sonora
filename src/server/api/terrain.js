@@ -95,6 +95,16 @@ export const call = (
         headers: buildRequestOptionHeaders(),
     };
 
+    if (accessToken) {
+        requestOptions = {
+            ...requestOptions,
+            credentials: "include",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+    }
+
     if (!["GET", "HEAD"].includes(method)) {
         requestOptions.body = inStream;
     }
