@@ -116,5 +116,7 @@ export const call = (
         };
     }
 
+    console.log(JSON.stringify(requestOptions));
+
     return fetch(apiURL, requestOptions);
 };
