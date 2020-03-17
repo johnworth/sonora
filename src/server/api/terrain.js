@@ -40,6 +40,7 @@ export const handler = ({ method, pathname, headers }) => {
         )
             .then((apiResponse) => {
                 res.status(apiResponse.status);
+                res.set("Content-Type", "application/json");
                 apiResponse.body.pipe(res);
             })
             .catch((e) => {
@@ -115,8 +116,6 @@ export const call = (
             ...headers,
         };
     }
-
-    console.log(JSON.stringify(requestOptions));
 
     return fetch(apiURL, requestOptions);
 };
