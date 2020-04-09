@@ -15,6 +15,7 @@ import {
     CardContent,
     Divider,
     Grid,
+    Paper,
     Typography,
 } from "@material-ui/core";
 
@@ -38,25 +39,30 @@ const useStyles = makeStyles((theme) => ({
     subtitle: {
         marginBottom: 15,
     },
-    spacing: {
-        width: "calc(100% + 56px)", // This is the original setting from MUI itself
-        margin: "0px -28px 128px -28px", // This is needed to get the vertical scrolling to stop cutting off the bottom of the content.
-    },
     gridRoot: {
-        overflow: "auto", // Needed for vertical scrolling.
-        height: "100vh", // Needed to get the vertical scrolling working.
-        padding: "0 30px 0 30px",
-        backgroundColor: theme.palette.bgGray,
+        flexGrow: 1,
+        overflowY: "auto",
+        overflowX: "hidden",
+        height: "70vh",
+        [theme.breakpoints.up("md")]: {
+            width: "100%",
+        },
+        [theme.breakpoints.down("xs")]: {
+            width: "95%",
+        },
+        margin: theme.spacing(2),
     },
     dashboardCard: {
-        width: 450,
         height: 225,
         display: "flex",
         flexDirection: "column",
-
-        [theme.breakpoints.down("sm")]: {
-            width: 300,
+        [theme.breakpoints.up("sm")]: {
+            width: 375,
         },
+        [theme.breakpoints.down("xs")]: {
+            width: 275,
+        },
+        margin: theme.spacing(2),
     },
     actionsRoot: {
         marginLeft: "auto",
@@ -141,6 +147,7 @@ export const DashboardItem = (props) => {
         <Card
             className={classes.dashboardCard}
             id={buildID(ids.ITEM_BASE, cardID)}
+            raised={true}
         >
             <CardContent
                 classes={{
@@ -187,29 +194,20 @@ const DashboardSection = ({ name, kind, items }) => {
     const classes = useStyles();
 
     return (
-        <Grid container item xs={12}>
-            <Grid item xs={12}>
-                <Typography
-                    noWrap
-                    gutterBottom
-                    variant="h5"
-                    component="h5"
-                    color="primary"
-                >
-                    {name}
-                </Typography>
-
-                <Divider classes={{ root: classes.dividerRoot }} />
-            </Grid>
-
-            <Grid container item xs={12} spacing={1}>
+        <>
+            <Divider classes={{ root: classes.dividerRoot }} />
+            <Typography noWrap variant="h5" color="primary">
+                {name}
+            </Typography>
+            <Divider classes={{ root: classes.dividerRoot }} />
+            <Grid container item xs={12} spacing={6}>
                 {items.map((item) => (
                     <Grid item key={item.id}>
                         <DashboardItem kind={kind} content={item} />
                     </Grid>
                 ))}
             </Grid>
-        </Grid>
+        </>
     );
 };
 
@@ -255,38 +253,27 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className={classes.gridRoot}>
-            <Grid
-                container
-                item
-                classes={{
-                    root: classes.root,
-                    "spacing-xs-7": classes.spacing,
-                }}
-                spacing={7}
-            >
-                {sections
-                    .filter(
-                        ([kind, section, _label]) =>
-                            data[kind] !== undefined &&
-                            data[kind][section] !== undefined
-                    )
-                    .filter(
-                        ([kind, section, _label]) =>
-                            data[kind][section].length > 0
-                    )
-                    .map(([kind, section, label]) => {
-                        return (
-                            <DashboardSection
-                                kind={kind}
-                                key={`${kind}-${section}`}
-                                items={data[kind][section]}
-                                name={label}
-                            />
-                        );
-                    })}
-            </Grid>
-        </div>
+        <Paper className={classes.gridRoot} elevation={0}>
+            {sections
+                .filter(
+                    ([kind, section, _label]) =>
+                        data[kind] !== undefined &&
+                        data[kind][section] !== undefined
+                )
+                .filter(
+                    ([kind, section, _label]) => data[kind][section].length > 0
+                )
+                .map(([kind, section, label]) => {
+                    return (
+                        <DashboardSection
+                            kind={kind}
+                            key={`${kind}-${section}`}
+                            items={data[kind][section]}
+                            name={label}
+                        />
+                    );
+                })}
+        </Paper>
     );
 };
 
