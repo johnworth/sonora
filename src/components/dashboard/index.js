@@ -289,7 +289,7 @@ export const DashboardItem = (props) => {
     const [origination, date] = getOrigination(kind, content, intl);
     const user = cleanUsername(content.username);
     const [headerClass, avatarClass] = getSectionClass(section, classes);
-    const rootClass = clsx(classes.cardHeaderDefault, headerClass);
+    const rootClass = clsx(classes.cardHeaderBase, headerClass);
 
     return (
         <Card

@@ -7,6 +7,9 @@ export default makeStyles((theme) => ({
         paddingRight: theme.spacing(2),
         paddingBottom: theme.spacing(2),
         paddingLeft: theme.spacing(2),
+        overflowWrap: "break-word",
+        wordWrap: "break-word",
+        hyphens: "auto",
     },
     dividerRoot: {
         marginBottom: theme.spacing(1),
@@ -84,6 +87,9 @@ export default makeStyles((theme) => ({
         color: theme.palette.gray,
     },
     cardHeaderDefault: {
+        background: theme.palette.primary.main,
+    },
+    cardHeaderBase: {
         background: theme.palette.primary.main,
         marginBottom: theme.spacing(2),
     },
