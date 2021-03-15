@@ -437,4 +437,34 @@ export default {
             },
         ],
     },
+    instantLaunches: [
+        {
+            quick_launch_name: "instant-launch-test",
+            quick_launch_creator: "wregglej@iplantcollaborative.org",
+            added_by: "wregglej@iplantcollaborative.org",
+            app_id: "d61d9a26-e921-11e9-8fe0-008cfa5ae621",
+            app_disabled: false,
+            quick_launch_description: "",
+            is_public: true,
+            added_on: "2021-03-15T14:07:29.609419Z",
+            id: "73b99da4-85d2-11eb-831f-62d47aced14b",
+            app_deleted: false,
+            quick_launch_id: "0c01f86f-3a60-4477-b158-d4ede1990f9b",
+            app_description:
+                "Jupyter Lab based on jupyter/datascience-notebook with updated iJab plugin, jupyterlab_irods and SQL ",
+            submission: {
+                config: {
+                    "d61e56f0-e921-11e9-8fe0-008cfa5ae621_d62788d8-e921-11e9-8fe0-008cfa5ae621": [],
+                },
+                name: "jupyter-lab-instant-launch",
+                app_id: "d61d9a26-e921-11e9-8fe0-008cfa5ae621",
+                system_id: "de",
+                debug: false,
+                output_dir: "/iplant/home/wregglej/analyses_qa",
+                notify: true,
+            },
+            integrator: "upendra_35@iplantcollaborative.org",
+            app_name: "JupyterLab-with-sql-1.0.9",
+        },
+    ],
 };
