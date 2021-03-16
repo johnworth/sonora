@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import clsx from "clsx";
 
 import {
-    Typography,
-    Collapse,
+    Avatar,
     Button,
-    useTheme,
+    Collapse,
     Divider,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Typography,
+    useTheme,
 } from "@material-ui/core";
 
 import getItem from "./dashboardItem";
@@ -99,6 +104,46 @@ const DashboardSection = ({
                     </Typography>
                 </Button>
             )}
+        </div>
+    );
+};
+
+// DashboardILSection is the part of the dashboard that contains the listing of instant
+// instant launches that are available to the users on log in.
+const DashboardILSection = ({ name, items, id, showErrorAnnouncer }) => {
+    const classes = useStyles();
+    const theme = useTheme();
+    //const { t } = useTranslation("dashboard");
+
+    return (
+        <div className={classes.section} id={id}>
+            <Typography
+                variant="h6"
+                style={{
+                    color: theme.palette.info.main,
+                }}
+            >
+                {name}
+            </Typography>
+
+            <List className={classes.sectionList}>
+                {items.map((item) => {
+                    return (
+                        <ListItem alignItems="flex-start">
+                            <ListItemAvatar>
+                                <Avatar className={classes.sectionAvatar}>
+                                    IL
+                                </Avatar>
+                            </ListItemAvatar>
+
+                            <ListItemText
+                                primary={item.app_name}
+                                secondary={item.app_description}
+                            />
+                        </ListItem>
+                    );
+                })}
+            </List>
         </div>
     );
 };
@@ -212,6 +257,28 @@ export class PublicApps extends SectionBase {
             constants.SECTION_PUBLIC,
             "publicApps",
             ids.SECTION_PUBLIC_APPS
+        );
+    }
+}
+
+export class InstantLaunches extends SectionBase {
+    constructor() {
+        super(
+            constants.KIND_INSTANT_LAUNCHES,
+            "",
+            "instantLaunches",
+            ids.SECTION_INSTANT_LAUNCHES
+        );
+    }
+
+    getComponent({ t, data }) {
+        const items = data[this.kind];
+        return (
+            <DashboardILSection
+                name={t("instantLaunches")}
+                kind={constants.KIND_INSTANT_LAUNCHES}
+                items={items}
+            />
         );
     }
 }

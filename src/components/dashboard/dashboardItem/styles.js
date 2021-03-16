@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { deepPurple } from "@material-ui/core/colors";
 
 export default makeStyles((theme) => ({
     tripleDotMenu: {
@@ -71,5 +72,13 @@ export default makeStyles((theme) => ({
         paddingRight: theme.spacing(2),
         paddingBottom: theme.spacing(2),
         paddingLeft: theme.spacing(2),
+    },
+    sectionList: {
+        width: "100%",
+        backgroundColor: theme.palette.background.paper,
+    },
+    sectionAvatar: {
+        color: theme.palette.getContrastText(deepPurple[500]),
+        backgroundColor: deepPurple[500],
     },
 }));

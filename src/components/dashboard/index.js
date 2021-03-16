@@ -29,6 +29,7 @@ import {
     RecentAnalyses,
     RunningAnalyses,
     VideosFeed,
+    InstantLaunches,
 } from "./DashboardSection";
 
 import {
@@ -122,6 +123,7 @@ const Dashboard = (props) => {
 
     if (userProfile?.id) {
         sections = [
+            new InstantLaunches(),
             new RecentAnalyses(),
             new RunningAnalyses(),
             new RecentlyUsedApps(),
@@ -134,12 +136,20 @@ const Dashboard = (props) => {
 
     const filteredSections = data
         ? sections
-              .filter(
-                  (section) =>
-                      data.hasOwnProperty(section.kind) &&
-                      data[section.kind].hasOwnProperty(section.name)
-              )
-              .filter((section) => data[section.kind][section.name].length > 0)
+              .filter((section) => data.hasOwnProperty(section.kind))
+              .filter((section) => {
+                  if (section.name && section.name !== "") {
+                      return (
+                          data[section.kind].hasOwnProperty(section.name) &&
+                          data[section.kind][section.name].length > 0
+                      );
+                  } else if (Array.isArray(data[section.kind])) {
+                      return data[section.kind].length > 0;
+                  }
+
+                  // If we get here, assume it's an object. Make sure it has properties.
+                  return Object.keys(data[section.kind]).length > 0;
+              })
               .map((section, index) =>
                   section.getComponent({
                       t,
