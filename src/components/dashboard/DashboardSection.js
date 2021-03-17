@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import clsx from "clsx";
+import React from "react";
 
 import {
-    Avatar,
-    Button,
     Collapse,
-    Divider,
     List,
     ListItem,
     ListItemText,
-    ListItemAvatar,
     Typography,
     useTheme,
+    IconButton,
+    ListItemIcon,
 } from "@material-ui/core";
 
 import getItem from "./dashboardItem";
@@ -20,7 +17,8 @@ import useStyles from "./styles";
 import * as fns from "./functions";
 import * as constants from "./constants";
 import ids from "./ids";
-import { useTranslation } from "i18n";
+
+import { ExpandLess, ExpandMore, PlayArrow } from "@material-ui/icons";
 
 const DashboardSection = ({
     name,
@@ -37,18 +35,11 @@ const DashboardSection = ({
     setDetailsAnalysis,
 }) => {
     const classes = useStyles();
-    const { t } = useTranslation("dashboard");
-    const [expanded, setExpanded] = useState(false);
     const theme = useTheme();
-
-    const isNewsSection = section === constants.SECTION_NEWS;
-    const isEventsSection = section === constants.SECTION_EVENTS;
 
     if (!limit) {
         limit = numColumns;
     }
-
-    const displayShowMore = limit < items.length || expanded;
 
     const itemComponent = (item, index) =>
         getItem({
@@ -63,18 +54,10 @@ const DashboardSection = ({
             setDetailsAnalysis,
         }).component(index);
 
-    const uncollapsed = items.slice(0, limit).map(itemComponent);
-    const collapsible = items.slice(limit).map(itemComponent);
+    const content = items.map(itemComponent);
 
     return (
-        <div
-            className={clsx(
-                classes.section,
-                isNewsSection && classes.sectionNews,
-                isEventsSection && classes.sectionEvents
-            )}
-            id={id}
-        >
+        <div className={classes.section} id={id}>
             <Typography
                 variant="h6"
                 style={{
@@ -83,28 +66,40 @@ const DashboardSection = ({
             >
                 {name}
             </Typography>
-            <Divider
-                style={{
-                    margin: 0,
-                    color: theme.palette.info.main,
-                }}
-            />
-            <div className={classes.sectionItems}>{uncollapsed}</div>
-            <Collapse in={expanded}>
-                <div className={classes.sectionItems}>{collapsible}</div>
-            </Collapse>
-            {displayShowMore && (
-                <Button
-                    onClick={() => setExpanded(!expanded)}
-                    className={classes.showMoreBtn}
-                    color="primary"
-                >
-                    <Typography variant="button" display="block">
-                        {expanded ? t("showFewer") : t("showMore")}
-                    </Typography>
-                </Button>
-            )}
+
+            <div className={classes.sectionItems}>{content}</div>
         </div>
+    );
+};
+
+const DashboardILListItem = ({ item }) => {
+    const [expanded, setExpanded] = React.useState(false);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+
+    return (
+        <ListItem alignItems="flex-start">
+            <ListItemIcon>
+                <PlayArrow />
+            </ListItemIcon>
+
+            <ListItemText>{item.app_name}</ListItemText>
+
+            <IconButton>
+                <PlayArrow />
+            </IconButton>
+
+            <IconButton edge="end" onClick={handleExpandClick}>
+                {expanded ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <ListItemText>
+                    <Typography paragraph>{item.app_description}</Typography>
+                </ListItemText>
+            </Collapse>
+        </ListItem>
     );
 };
 
@@ -127,33 +122,21 @@ const DashboardILSection = ({ name, items, id, showErrorAnnouncer }) => {
             </Typography>
 
             <List className={classes.sectionList}>
-                {items.map((item) => {
-                    return (
-                        <ListItem alignItems="flex-start">
-                            <ListItemAvatar>
-                                <Avatar className={classes.sectionAvatar}>
-                                    IL
-                                </Avatar>
-                            </ListItemAvatar>
-
-                            <ListItemText
-                                primary={item.app_name}
-                                secondary={item.app_description}
-                            />
-                        </ListItem>
-                    );
-                })}
+                {items.map((item) => (
+                    <DashboardILListItem item={item} />
+                ))}
             </List>
         </div>
     );
 };
 
 class SectionBase {
-    constructor(kind, name, labelName, idBase) {
+    constructor(kind, name, labelName, idBase, gridSizes = {}) {
         this.kind = kind;
         this.name = name;
         this.label = labelName;
         this.id = fns.makeID(idBase);
+        this.gridSizes = gridSizes;
     }
 
     getComponent({
@@ -207,67 +190,73 @@ class SectionBase {
 }
 
 export class RecentAnalyses extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_ANALYSES,
             constants.SECTION_RECENT,
             "recentAnalyses",
-            ids.SECTION_RECENT_ANALYSES
+            ids.SECTION_RECENT_ANALYSES,
+            sizes
         );
     }
 }
 
 export class RunningAnalyses extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_ANALYSES,
             constants.SECTION_RUNNING,
             "runningAnalyses",
-            ids.SECTION_RECENT_ANALYSES
+            ids.SECTION_RECENT_ANALYSES,
+            sizes
         );
     }
 }
 
 export class RecentlyAddedApps extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_APPS,
             constants.SECTION_RECENTLY_ADDED,
             "recentlyAddedApps",
-            ids.SECTION_RECENTLY_ADDED_APPS
+            ids.SECTION_RECENTLY_ADDED_APPS,
+            sizes
         );
     }
 }
 
 export class RecentlyUsedApps extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_APPS,
             constants.SECTION_RECENTLY_USED,
             "recentlyUsedApps",
-            ids.SECTION_RECENTLY_USED_APPS
+            ids.SECTION_RECENTLY_USED_APPS,
+            sizes
         );
     }
 }
 
 export class PublicApps extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_APPS,
             constants.SECTION_PUBLIC,
             "publicApps",
-            ids.SECTION_PUBLIC_APPS
+            ids.SECTION_PUBLIC_APPS,
+            sizes
         );
     }
 }
 
 export class InstantLaunches extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_INSTANT_LAUNCHES,
             "",
             "instantLaunches",
-            ids.SECTION_INSTANT_LAUNCHES
+            ids.SECTION_INSTANT_LAUNCHES,
+            sizes
         );
     }
 
@@ -284,12 +273,13 @@ export class InstantLaunches extends SectionBase {
 }
 
 export class NewsFeed extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_FEEDS,
             constants.SECTION_NEWS,
             "newsFeed",
-            ids.SECTION_NEWS
+            ids.SECTION_NEWS,
+            sizes
         );
     }
 
@@ -302,12 +292,13 @@ export class NewsFeed extends SectionBase {
 }
 
 export class EventsFeed extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_FEEDS,
             constants.SECTION_EVENTS,
             "eventsFeed",
-            ids.SECTION_EVENTS
+            ids.SECTION_EVENTS,
+            sizes
         );
     }
 
@@ -320,12 +311,13 @@ export class EventsFeed extends SectionBase {
 }
 
 export class VideosFeed extends SectionBase {
-    constructor() {
+    constructor(sizes = {}) {
         super(
             constants.KIND_FEEDS,
             constants.SECTION_VIDEOS,
             "videosFeed",
-            ids.SECTION_VIDEOS
+            ids.SECTION_VIDEOS,
+            sizes
         );
     }
 

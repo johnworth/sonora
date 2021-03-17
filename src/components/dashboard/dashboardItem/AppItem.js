@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { queryCache, useMutation } from "react-query";
 
-import Link from "next/link";
-
 import { PlayArrow, Info, Apps } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
 
@@ -16,6 +14,31 @@ import { useTranslation } from "i18n";
 import AppFavorite from "components/apps/AppFavorite";
 import { useAppLaunchLink } from "components/apps/utils";
 import { useTheme } from "@material-ui/core";
+import { useRouter } from "next/router";
+
+const AppLaunchAction = ({ systemID, appID }) => {
+    const { t } = useTranslation("dashboard");
+    const theme = useTheme();
+    const router = useRouter();
+    const [, launchAs] = useAppLaunchLink(systemID, appID);
+
+    return (
+        <ItemAction ariaLabel={t("launchAria")} tooltipKey="launchAction">
+            <IconButton
+                style={{
+                    margin: theme.spacing(1),
+                }}
+                size="small"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(launchAs);
+                }}
+            >
+                <PlayArrow color="primary" />
+            </IconButton>
+        </ItemAction>
+    );
+};
 
 class AppItem extends ItemBase {
     constructor(props) {
@@ -64,7 +87,6 @@ class AppItem extends ItemBase {
             });
         };
 
-        const [launchHref, launchAs] = useAppLaunchLink(app.system_id, app.id);
         return item.addActions(
             [
                 app.is_public && (
@@ -79,35 +101,25 @@ class AppItem extends ItemBase {
                         }}
                     />
                 ),
-                <ItemAction
-                    ariaLabel={t("launchAria")}
+                <AppLaunchAction
                     key={buildKey("launch")}
-                    tooltipKey="launchAction"
-                >
-                    <Link href={launchHref} as={launchAs} passHref>
-                        <IconButton
-                            style={{
-                                margin: theme.spacing(1),
-                            }}
-                            size="small"
-                        >
-                            <PlayArrow color="primary" />
-                        </IconButton>
-                    </Link>
-                </ItemAction>,
+                    systemID={app.system_id}
+                    appID={app.id}
+                />,
                 <ItemAction
                     ariaLabel={t("openDetailsAria")}
                     key={`${constants.KIND_APPS}-${props.content.id}-details`}
                     tooltipKey="detailsAction"
                 >
                     <IconButton
-                        onClick={() =>
+                        onClick={(e) => {
+                            e.stopPropagation();
                             setDetailsApp({
                                 ...app,
                                 onFavoriteUpdated: (isFavoriteNow) =>
                                     setIsFavorite(!isFavoriteNow),
-                            })
-                        }
+                            });
+                        }}
                         style={{
                             margin: theme.spacing(1),
                         }}

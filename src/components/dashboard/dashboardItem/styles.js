@@ -12,6 +12,8 @@ export default makeStyles((theme) => ({
     },
     cardHeaderDefault: {
         background: theme.palette.white,
+        flexBasis: "45.00%",
+        flexShrink: 0,
     },
     avatarIcon: {
         color: (props) => theme.palette.white,

@@ -13,7 +13,7 @@ import { useQuery } from "react-query";
 
 import { useTranslation } from "i18n";
 
-import { Typography } from "@material-ui/core";
+import { Grid, Typography, Box } from "@material-ui/core";
 
 import { Skeleton } from "@material-ui/lab";
 
@@ -123,11 +123,11 @@ const Dashboard = (props) => {
 
     if (userProfile?.id) {
         sections = [
-            new InstantLaunches(),
+            new InstantLaunches({ xs: 12 }),
             new RecentAnalyses(),
             new RunningAnalyses(),
             new RecentlyUsedApps(),
-            new PublicApps(),
+            new PublicApps({ xs: 12 }),
             // new NewsFeed(),
             // new EventsFeed(),
             new VideosFeed(),
@@ -150,24 +150,33 @@ const Dashboard = (props) => {
                   // If we get here, assume it's an object. Make sure it has properties.
                   return Object.keys(data[section.kind]).length > 0;
               })
-              .map((section, index) =>
-                  section.getComponent({
-                      t,
-                      data,
-                      cardWidth,
-                      cardHeight,
-                      numColumns,
-                      showErrorAnnouncer,
-                      setDetailsApp,
-                      setDetailsAnalysis,
-                  })
-              )
         : [];
 
     let componentContent;
 
     if (filteredSections.length > 0) {
-        componentContent = filteredSections;
+        componentContent = (
+            <Box maxWidth={1024} width={1}>
+                <Grid container spacing={3}>
+                    {filteredSections.map((section) => {
+                        return (
+                            <Grid item {...section.gridSizes}>
+                                {section.getComponent({
+                                    t,
+                                    data,
+                                    cardWidth,
+                                    cardHeight,
+                                    numColumns,
+                                    showErrorAnnouncer,
+                                    setDetailsApp,
+                                    setDetailsAnalysis,
+                                })}
+                            </Grid>
+                        );
+                    })}
+                </Grid>
+            </Box>
+        );
     } else {
         componentContent = (
             <Typography color="textSecondary">{t("noContentFound")}</Typography>

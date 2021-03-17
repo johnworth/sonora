@@ -6,9 +6,10 @@ import ReactPlayer from "react-player/youtube";
 
 import {
     Avatar,
-    Card,
-    CardContent,
     CardHeader,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Link,
     Typography,
     useMediaQuery,
@@ -16,6 +17,8 @@ import {
     MenuItem,
     useTheme,
 } from "@material-ui/core";
+
+import { ExpandMore } from "@material-ui/icons";
 
 import { build as buildID } from "@cyverse-de/ui-lib";
 
@@ -73,74 +76,93 @@ const DashboardItem = ({ item }) => {
     const [origination, date] = item.getOrigination(t);
 
     return (
-        <Card
-            classes={{ root: classes.dashboardCard }}
-            id={fns.makeID(ids.ITEM, cardID)}
-            elevation={4}
-        >
-            <CardHeader
-                avatar={
-                    isMediumOrLarger && (
-                        <Avatar className={classes.avatar}>
-                            {item.getAvatarIcon(classes)}
-                        </Avatar>
-                    )
-                }
-                classes={{
-                    root: classes.cardHeaderDefault,
-                    content: classes.cardHeaderContent,
-                }}
-                title={item.content.name}
-                titleTypographyProps={{
-                    noWrap: true,
-                    variant: "subtitle2",
-                    classes: { colorPrimary: classes.cardHeaderText },
-                }}
-                subheader={
-                    item.kind === constants.KIND_ANALYSES ? (
-                        <Trans
-                            t={t}
-                            i18nKey={"analysisOrigination"}
-                            values={{ status: item.content.status, date: date }}
-                            components={{ bold: <strong /> }}
-                        />
-                    ) : (
-                        t("origination", {
-                            origination,
-                            user,
-                            date,
-                        })
-                    )
-                }
-                subheaderTypographyProps={{
-                    noWrap: true,
-                    variant: "caption",
-                    classes: { colorPrimary: classes.cardHeaderText },
-                }}
-            />
-            <CardContent
-                classes={{
-                    root: classes.root,
-                }}
+        <Accordion>
+            <AccordionSummary
+                expandIcon={<ExpandMore />}
+                id={fns.makeID(ids.ITEM, cardID)}
             >
-                <Typography
-                    color="textSecondary"
-                    variant="body2"
-                    style={{ overflow: "ellipsis", height: "4.0em" }}
+                <CardHeader
+                    avatar={
+                        isMediumOrLarger && (
+                            <Avatar className={classes.avatar}>
+                                {item.getAvatarIcon(classes)}
+                            </Avatar>
+                        )
+                    }
+                    classes={{
+                        root: classes.cardHeaderDefault,
+                        content: classes.cardHeaderContent,
+                    }}
+                    title={item.content.name}
+                    titleTypographyProps={{
+                        noWrap: true,
+                        variant: "subtitle2",
+                        classes: { colorPrimary: classes.cardHeaderText },
+                    }}
+                    subheader={
+                        item.kind === constants.KIND_ANALYSES ? (
+                            <Trans
+                                t={t}
+                                i18nKey={"analysisOrigination"}
+                                values={{
+                                    status: item.content.status,
+                                    date: date,
+                                }}
+                                components={{ bold: <strong /> }}
+                            />
+                        ) : (
+                            t("origination", {
+                                origination,
+                                user,
+                                date,
+                            })
+                        )
+                    }
+                    subheaderTypographyProps={{
+                        noWrap: true,
+                        variant: "caption",
+                        classes: { colorPrimary: classes.cardHeaderText },
+                    }}
+                />
+
+                <div
+                    style={{
+                        display: "flex",
+                        direction: "row",
+                    }}
                 >
+                    {item.actions}
+                </div>
+            </AccordionSummary>
+
+            <AccordionDetails>
+                <Typography>
                     {description || t("noDescriptionProvided")}
                 </Typography>
-            </CardContent>
+            </AccordionDetails>
+        </Accordion>
 
-            <div
-                style={{
-                    display: "flex",
-                    direction: "row",
-                }}
-            >
-                {item.actions}
-            </div>
-        </Card>
+        // <Card
+        //     classes={{ root: classes.dashboardCard }}
+        //     id={fns.makeID(ids.ITEM, cardID)}
+        //     elevation={4}
+        // >
+
+        //     <CardContent
+        //         classes={{
+        //             root: classes.root,
+        //         }}
+        //     >
+        //         <Typography
+        //             color="textSecondary"
+        //             variant="body2"
+        //             style={{ overflow: "ellipsis", height: "4.0em" }}
+        //         >
+        //             {description || t("noDescriptionProvided")}
+        //         </Typography>
+        //     </CardContent>
+
+        //</Card>
     );
 };
 
@@ -210,7 +232,7 @@ export const ItemAction = ({ children, tooltipKey, ariaLabel }) => {
     // down to components that may not support them, like Next.js's Link.
     return (
         <Tooltip title={t(tooltipKey)} aria-label={ariaLabel}>
-            <div>{children}</div>
+            {children}
         </Tooltip>
     );
 };

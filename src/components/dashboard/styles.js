@@ -31,9 +31,9 @@ export default makeStyles((theme) => ({
         },
     },
     sectionItems: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "flex-start",
+        // display: "flex",
+        // flexWrap: "wrap",
+        // justifyContent: "flex-start",
         paddingRight: 0,
 
         // Try to eek as much space out of the iPhone SE cards as possible.
