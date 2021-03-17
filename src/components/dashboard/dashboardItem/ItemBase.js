@@ -141,28 +141,6 @@ const DashboardItem = ({ item }) => {
                 </Typography>
             </AccordionDetails>
         </Accordion>
-
-        // <Card
-        //     classes={{ root: classes.dashboardCard }}
-        //     id={fns.makeID(ids.ITEM, cardID)}
-        //     elevation={4}
-        // >
-
-        //     <CardContent
-        //         classes={{
-        //             root: classes.root,
-        //         }}
-        //     >
-        //         <Typography
-        //             color="textSecondary"
-        //             variant="body2"
-        //             style={{ overflow: "ellipsis", height: "4.0em" }}
-        //         >
-        //             {description || t("noDescriptionProvided")}
-        //         </Typography>
-        //     </CardContent>
-
-        //</Card>
     );
 };
 
