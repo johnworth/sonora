@@ -130,7 +130,7 @@ const Dashboard = (props) => {
             new PublicApps({ xs: 12 }),
             // new NewsFeed(),
             // new EventsFeed(),
-            new VideosFeed(),
+            new VideosFeed({ xs: 12 }),
         ];
     }
 
